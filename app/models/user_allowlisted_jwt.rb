@@ -1,0 +1,2 @@
+class UserAllowlistedJwt < ApplicationRecord
+end
