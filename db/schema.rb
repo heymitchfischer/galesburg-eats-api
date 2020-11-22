@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_20_055242) do
+ActiveRecord::Schema.define(version: 2020_11_22_032545) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,42 @@ ActiveRecord::Schema.define(version: 2020_11_20_055242) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "slug"
+  end
+
+  create_table "carted_items", force: :cascade do |t|
+    t.integer "menu_item_id"
+    t.integer "user_id"
+    t.integer "order_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.boolean "removed", default: false
+  end
+
+  create_table "menu_items", force: :cascade do |t|
+    t.string "name"
+    t.integer "menu_section_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "menu_sections", force: :cascade do |t|
+    t.string "name"
+    t.integer "menu_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "menus", force: :cascade do |t|
+    t.string "name"
+    t.integer "business_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.integer "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "user_allowlisted_jwts", force: :cascade do |t|

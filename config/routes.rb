@@ -6,4 +6,8 @@ Rails.application.routes.draw do
   delete '/remove_cookie' => 'cookies#remove_cookie'
   get    '/businesses' => 'businesses#index'
   get    '/businesses/:slug' => 'businesses#show'
+  get    '/carted_items' => 'carted_items#index'
+  post   '/carted_items' => 'carted_items#create'
+  delete '/carted_items/:id' => 'carted_items#destroy'
+  post   '/orders' => 'orders#create'
 end

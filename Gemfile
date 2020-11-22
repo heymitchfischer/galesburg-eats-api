@@ -20,6 +20,7 @@ gem 'devise', '~> 4.2'
 gem 'devise-jwt', '~> 0.7.0'
 gem 'figaro'
 gem 'rack-cors', '~> 0.4.0'
+gem 'jbuilder'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
