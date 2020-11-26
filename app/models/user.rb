@@ -14,5 +14,9 @@ class User < ApplicationRecord
   def items_in_cart
     carted_items.where(order_id: nil, removed: false)
   end
+
+  def logged_in?
+    allowlisted_jwts.any?
+  end
 end
 

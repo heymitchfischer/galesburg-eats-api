@@ -1,5 +1,13 @@
 # frozen_string_literal: true
 
+class JsonFailureApp < Devise::FailureApp
+  def respond
+    self.status = 401
+    self.content_type = 'application/json'
+    self.response_body = '{"error" : "Access Denied."}'
+  end
+end
+
 # Assuming you have not yet modified this file, each configuration option below
 # is set to its default value. Note that some are commented out while others
 # are not: uncommented lines are intended to protect your configuration from
@@ -319,5 +327,9 @@ Devise.setup do |config|
     ]
     jwt.expiration_time = 10.years.to_i
     jwt.aud_header = 'Jwt-Auth'
+  end
+
+  config.warden do |manager|
+      manager.failure_app = JsonFailureApp
   end
 end

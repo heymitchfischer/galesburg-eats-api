@@ -58,3 +58,8 @@
 # MenuItem.create(name: 'Hashbrowns', menu_section_id: 12)
 # MenuItem.create(name: 'Coffee', menu_section_id: 13)
 # MenuItem.create(name: 'Orange Juice', menu_section_id: 13)
+
+# Business.find(1).image.attach(io: File.open('public/test_images/landmark.jpg'), filename: 'landmark.jpg', content_type: 'image/jpg')
+Business.find(2).image.attach(io: File.open('public/test_images/baked.jpg'), filename: 'baked.jpg', content_type: 'image/jpg')
+Business.find(3).image.attach(io: File.open('public/test_images/koreana.jpg'), filename: 'koreana.jpg', content_type: 'image/jpg')
+Business.find(4).image.attach(io: File.open('public/test_images/grandview.jpg'), filename: 'grandview.jpg', content_type: 'image/jpg')

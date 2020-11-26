@@ -4,4 +4,5 @@ json.array! @businesses do |business|
   json.address business.address
   json.description business.description
   json.slug business.slug
+  json.image_url business.image_url
 end

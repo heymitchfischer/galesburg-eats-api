@@ -1,10 +1,6 @@
 class CookiesController < ApplicationController
   before_action :authenticate_user!, except: [:validate_cookie, :remove_cookie]
 
-  def test
-    render json: { message: 'Hello world' }
-  end
-
   def store_cookie
     begin
       token = request.headers['Authorization'].split(' ')[1]
