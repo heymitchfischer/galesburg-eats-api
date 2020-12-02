@@ -4,6 +4,6 @@ class CartedItem < ApplicationRecord
   belongs_to :order, optional: true
 
   def business
-    @business ||= menu_item.menu_section.menu.business
+    @business ||= menu_item.business
   end
 end

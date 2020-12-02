@@ -1,9 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe 'Devise::SessionsController', type: :request do
+RSpec.describe 'Devise::Sessions', type: :request do
   describe '#create' do
     let(:email)    { 'test@example.com' }
     let(:password) { 'password' }
+    let(:user)     { User.find_by(email: email) }
 
     let(:headers) do
       {
@@ -35,7 +36,7 @@ RSpec.describe 'Devise::SessionsController', type: :request do
         expect(response.headers).to include('Authorization')
         expect(parsed_body.keys).to include('id', 'email')
         expect(parsed_body['email']).to eq(email)
-        expect(@user.reload.logged_in?).to be_truthy
+        expect(user.reload.logged_in?).to be_truthy
       end
     end
 
@@ -57,7 +58,7 @@ RSpec.describe 'Devise::SessionsController', type: :request do
         expect(response.headers).not_to include('Authorization')
         expect(parsed_body.keys).not_to include('id', 'email')
         expect(parsed_body.keys).to include('error')
-        expect(@user.reload.logged_in?).to be_falsey
+        expect(user.reload.logged_in?).to be_falsey
       end
     end
 
@@ -79,13 +80,17 @@ RSpec.describe 'Devise::SessionsController', type: :request do
         expect(response.headers).not_to include('Authorization')
         expect(parsed_body.keys).not_to include('id', 'email')
         expect(parsed_body.keys).to include('error')
-        expect(@user.reload.logged_in?).to be_falsey
+        expect(user.reload.logged_in?).to be_falsey
       end
     end
   end
 
   describe '#destroy' do
     context 'with a logged in user' do
+      let(:email)    { 'test@example.com' }
+      let(:password) { 'password' }
+      let(:user)     { User.find_by(email: email) }
+
       let(:headers) do
         {
           'Accept'        => 'application/json',
@@ -94,12 +99,12 @@ RSpec.describe 'Devise::SessionsController', type: :request do
         }
       end
 
-      before { create_and_log_in_user('test@example.com', 'password') }
+      before { create_and_log_in_user(email, password) }
 
       it 'successfully logs the user out' do
         delete(destroy_user_session_path, :headers => headers)
         expect(response.status).to eq(204)
-        expect(@user.reload.logged_in?).to be_falsey
+        expect(user.reload.logged_in?).to be_falsey
       end
     end
   end

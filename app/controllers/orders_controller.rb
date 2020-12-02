@@ -1,22 +1,33 @@
 class OrdersController < ApplicationController
   before_action :authenticate_user!
+  before_action :determine_access_to_order!, only: [:show]
 
   def index
     @orders = current_user.orders
   end
 
+  def show; end
+
   def create
-    # TODO: Check here to make sure that the user has items in cart
-
-    # TODO: Check here to make sure that all items in cart belong to same business
-    # business_id = current_user.business_id_from_cart
-    business_id = current_user.items_in_cart.first.business.id
-
-    Order.transaction do
-      order = Order.create(user_id: current_user.id, business_id: business_id)
-      current_user.items_in_cart.update_all(order_id: order.id)
+    begin
+      @order = cart.checkout
+      render 'show', status: 201
+    rescue CartError => error
+      render json: { error: error.message }, status: 500
     end
+  end
 
-    render status: 201
+  private
+
+  def cart
+    @cart ||= Cart.new(current_user)
+  end
+
+  def order
+    @order ||= Order.find(params[:id])
+  end
+
+  def authenticate_access
+    # Check here
   end
 end

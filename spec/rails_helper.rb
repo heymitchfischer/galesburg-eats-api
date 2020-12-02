@@ -64,7 +64,7 @@ RSpec.configure do |config|
 end
 
 def create_user(email, password)
-  @user = User.create(
+  User.create(
     email:                 email,
     password:              password,
     password_confirmation: password
@@ -93,4 +93,54 @@ end
 def create_and_log_in_user(email, password)
   create_user(email, password)
   log_user_in(email, password)
+end
+
+def create_businesses
+  @business_1 = Business.create(name: 'Landmark Café & Crêperie',
+                                address: '62 S Seminary St Galesburg, IL',
+                                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+
+  @business_2 = Business.create(name: 'Baked',
+                                address: '57 S Seminary St, Galesburg, IL',
+                                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+
+  @business_1.image.attach(io: File.open('public/test_images/landmark.jpg'),
+                                filename: 'landmark.jpg',
+                                content_type: 'image/jpg')
+
+  @business_2.image.attach(io: File.open('public/test_images/baked.jpg'),
+                                filename: 'baked.jpg',
+                                content_type: 'image/jpg')
+
+  menu_1 = Menu.create(name: 'Breakfast', business_id: @business_1.id)
+  menu_2 = Menu.create(name: 'Lunch', business_id: @business_1.id)
+  menu_3 = Menu.create(name: 'All Day', business_id: @business_2.id)
+
+  menu_section_1 = MenuSection.create(name: 'Crepes', menu_id: menu_1.id)
+  menu_section_2 = MenuSection.create(name: 'Beverages', menu_id: menu_1.id)
+  menu_section_3 = MenuSection.create(name: 'Sandwiches', menu_id: menu_2.id)
+  menu_section_4 = MenuSection.create(name: 'Dessert', menu_id: menu_2.id)
+  menu_section_5 = MenuSection.create(name: 'Beverages', menu_id: menu_2.id)
+  menu_section_6 = MenuSection.create(name: 'Pizza', menu_id: menu_3.id)
+  menu_section_7 = MenuSection.create(name: 'Beverages', menu_id: menu_3.id)
+
+  MenuItem.create(name: 'Landmark Crepe', menu_section_id: menu_section_1.id)
+  MenuItem.create(name: 'BBQ Chicken Crepe', menu_section_id: menu_section_1.id)
+  MenuItem.create(name: 'Coffee', menu_section_id: menu_section_2.id)
+  MenuItem.create(name: 'Tea', menu_section_id: menu_section_2.id)
+  MenuItem.create(name: 'Hot Chocolate', menu_section_id: menu_section_2.id)
+  MenuItem.create(name: 'The Healthy', menu_section_id: menu_section_3.id)
+  MenuItem.create(name: 'PB&J', menu_section_id: menu_section_3.id)
+  MenuItem.create(name: 'Ice Cream Sundae', menu_section_id: menu_section_4.id)
+  MenuItem.create(name: 'Cheesecake', menu_section_id: menu_section_4.id)
+  MenuItem.create(name: 'Coffee', menu_section_id: menu_section_5.id)
+  MenuItem.create(name: 'Tea', menu_section_id: menu_section_5.id)
+  MenuItem.create(name: 'Hot Chocolate', menu_section_id: menu_section_5.id)
+  MenuItem.create(name: 'Cheese', menu_section_id: menu_section_6.id)
+  MenuItem.create(name: 'Sausage', menu_section_id: menu_section_6.id)
+  MenuItem.create(name: 'Pepperoni', menu_section_id: menu_section_6.id)
+  MenuItem.create(name: 'Sweet Corn', menu_section_id: menu_section_6.id)
+  MenuItem.create(name: 'Cider', menu_section_id: menu_section_7.id)
+  MenuItem.create(name: 'Beer', menu_section_id: menu_section_7.id)
+  MenuItem.create(name: 'Wine', menu_section_id: menu_section_7.id)
 end

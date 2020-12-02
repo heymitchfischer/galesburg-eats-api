@@ -11,12 +11,16 @@ class User < ApplicationRecord
   has_many :carted_items
   has_many :orders
 
-  def items_in_cart
-    carted_items.where(order_id: nil, removed: false)
+  def current_items
+    cart.current_items
   end
 
   def logged_in?
     allowlisted_jwts.any?
+  end
+
+  def cart
+    @cart ||= Cart.new(self)
   end
 end
 
