@@ -172,4 +172,92 @@ RSpec.describe 'Orders', type: :request do
       end
     end
   end
+
+  describe '#create' do
+    context 'when a user is signed in' do
+      let(:email)    { 'test@example.com' }
+      let(:password) { 'password' }
+      let(:user)     { User.find_by(email: email) }
+      let(:item)     { @business_1.menu_items.first }
+
+      let(:headers) do
+        {
+          'Accept'        => 'application/json',
+          'Content-Type'  => 'application/json',
+          'Authorization' => @jwt,
+          'Jwt-Auth'      => 'user_web_client'
+        }
+      end
+
+      before do
+        create_and_log_in_user(email, password)
+        create_businesses
+      end
+
+      context 'when the user has an order' do
+        before do
+          user.cart.add_item(item)
+          user.cart.add_item(item)
+          user.cart.checkout
+        end
+
+        it 'returns the order details' do
+          get(order_path(Order.last), :headers => headers)
+          expect(response.status).to eq(200)
+          expect(response.content_type).to include('application/json')
+
+          parsed_body = JSON.parse(response.body)
+          expect(parsed_body).to be_an_instance_of(Hash)
+          expect(parsed_body.keys).to eq(ORDER_KEYS)
+          expect(parsed_body['carted_items']).to be_an_instance_of(Array)
+          expect(parsed_body['carted_items'].length).to eq(2)
+
+          ordered_item = parsed_body['carted_items'].first
+          expect(ordered_item).to be_an_instance_of(Hash)
+          expect(ordered_item.keys).to eq(CARTED_ITEMS_KEYS)
+          expect(ordered_item['menu_item_id']).to eq(item.id)
+        end
+      end
+
+      context 'when a different user has the order' do
+        let(:user_2) { create_user('test2@example.com', 'password') }
+
+        before do
+          user_2.cart.add_item(item)
+          user_2.cart.add_item(item)
+          user_2.cart.checkout
+        end
+
+        it 'returns the order details' do
+          get(order_path(Order.last), :headers => headers)
+          expect(response.status).to eq(403)
+          expect(response.content_type).to include('application/json')
+
+          parsed_body = JSON.parse(response.body)
+          expect(parsed_body).to be_an_instance_of(Hash)
+          expect(parsed_body.keys).to include('error')
+          expect(parsed_body['error']).to eq('User does not have access to that order.')
+        end
+      end
+    end
+
+    context 'when a user is not signed in' do
+      let(:headers) do
+        {
+          'Accept'        => 'application/json',
+          'Content-Type'  => 'application/json'
+        }
+      end
+
+      it 'does not add create a new order and returns an error message' do
+        get(order_path(1), :headers => headers)
+        expect(response.status).to eq(401)
+        expect(response.content_type).to include('application/json')
+
+        parsed_body = JSON.parse(response.body)
+        expect(parsed_body).to be_an_instance_of(Hash)
+        expect(parsed_body.keys).to include('error')
+      end
+    end
+  end
 end

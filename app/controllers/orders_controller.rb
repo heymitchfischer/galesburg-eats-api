@@ -27,7 +27,10 @@ class OrdersController < ApplicationController
     @order ||= Order.find(params[:id])
   end
 
-  def authenticate_access
-    # Check here
+  def determine_access_to_order!
+    unless order.user == current_user
+      render json: { error: 'User does not have access to that order.' }, status: 403
+      return
+    end
   end
 end
