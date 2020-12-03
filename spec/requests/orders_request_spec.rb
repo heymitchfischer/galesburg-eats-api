@@ -1,9 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Orders', type: :request do
-  ORDER_KEYS = %w[id created_at business_name business_slug business_image_url carted_items]
-  CARTED_ITEMS_KEYS = %w[id menu_item_id menu_item_name business_id business_name]
-
   describe '#index' do
     context 'when a user is signed in' do
       let(:email)    { 'test@example.com' }
@@ -121,6 +118,7 @@ RSpec.describe 'Orders', type: :request do
           parsed_body = JSON.parse(response.body)
           expect(parsed_body).to be_an_instance_of(Hash)
           expect(parsed_body.keys).to eq(ORDER_KEYS)
+          expect(parsed_body['total_price']).to eq(2398)
           expect(parsed_body['carted_items']).to be_an_instance_of(Array)
           expect(parsed_body['carted_items'].length).to eq(2)
 
@@ -173,7 +171,7 @@ RSpec.describe 'Orders', type: :request do
     end
   end
 
-  describe '#create' do
+  describe '#show' do
     context 'when a user is signed in' do
       let(:email)    { 'test@example.com' }
       let(:password) { 'password' }
@@ -209,6 +207,7 @@ RSpec.describe 'Orders', type: :request do
           parsed_body = JSON.parse(response.body)
           expect(parsed_body).to be_an_instance_of(Hash)
           expect(parsed_body.keys).to eq(ORDER_KEYS)
+          expect(parsed_body['total_price']).to eq(2398)
           expect(parsed_body['carted_items']).to be_an_instance_of(Array)
           expect(parsed_body['carted_items'].length).to eq(2)
 

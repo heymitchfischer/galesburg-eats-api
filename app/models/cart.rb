@@ -45,14 +45,21 @@ class Cart
   end
 
   def checkout
-    raise CartError.new(NO_ITEMS_IN_CART_TO_CHECKOUT) unless current_items.any?
+    items_to_checkout = current_items
+    raise CartError.new(NO_ITEMS_IN_CART_TO_CHECKOUT) unless items_to_checkout.any?
+
+    total_price = determine_total(current_items)
 
     Order.transaction do
-      order = Order.create(user_id: user.id, business_id: current_business_id)
-      current_items.update_all(order_id: order.id)
+      order = Order.create(user_id: user.id, business_id: current_business_id, total_price: total_price)
+      items_to_checkout.update_all(order_id: order.id)
 
       # Make sure that we're returning the created order as the last line
       order
     end
+  end
+
+  def determine_total(items = current_items)
+    items.reduce(0) { |total, item| total + item.menu_item.price }
   end
 end

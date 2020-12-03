@@ -1,12 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Businesses', type: :request do
-  BUSINESSES_KEYS = %w[id name address description slug image_url].freeze
-  BUSINESS_KEYS = %w[id name address description slug image_url menus].freeze
-  MENU_KEYS = %w[id name menu_sections].freeze
-  MENU_SECTION_KEYS = %w[id name menu_items].freeze
-  MENU_ITEM_KEYS = %w[id name].freeze
-
   describe '#index' do
     let(:headers) do
       {

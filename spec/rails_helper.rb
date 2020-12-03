@@ -63,6 +63,15 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 end
 
+# Define constants here that will be used to check API responses
+BUSINESSES_KEYS = %w[id name address description slug image_url].freeze
+BUSINESS_KEYS = %w[id name address description slug image_url menus].freeze
+MENU_KEYS = %w[id name menu_sections].freeze
+MENU_SECTION_KEYS = %w[id name menu_items].freeze
+MENU_ITEM_KEYS = %w[id name price].freeze
+CARTED_ITEMS_KEYS = %w[id menu_item_id menu_item_name business_id business_name price].freeze
+ORDER_KEYS = %w[id created_at business_name business_slug business_image_url total_price carted_items].freeze
+
 def create_user(email, password)
   User.create(
     email:                 email,
@@ -124,23 +133,23 @@ def create_businesses
   menu_section_6 = MenuSection.create(name: 'Pizza', menu_id: menu_3.id)
   menu_section_7 = MenuSection.create(name: 'Beverages', menu_id: menu_3.id)
 
-  MenuItem.create(name: 'Landmark Crepe', menu_section_id: menu_section_1.id)
-  MenuItem.create(name: 'BBQ Chicken Crepe', menu_section_id: menu_section_1.id)
-  MenuItem.create(name: 'Coffee', menu_section_id: menu_section_2.id)
-  MenuItem.create(name: 'Tea', menu_section_id: menu_section_2.id)
-  MenuItem.create(name: 'Hot Chocolate', menu_section_id: menu_section_2.id)
-  MenuItem.create(name: 'The Healthy', menu_section_id: menu_section_3.id)
-  MenuItem.create(name: 'PB&J', menu_section_id: menu_section_3.id)
-  MenuItem.create(name: 'Ice Cream Sundae', menu_section_id: menu_section_4.id)
-  MenuItem.create(name: 'Cheesecake', menu_section_id: menu_section_4.id)
-  MenuItem.create(name: 'Coffee', menu_section_id: menu_section_5.id)
-  MenuItem.create(name: 'Tea', menu_section_id: menu_section_5.id)
-  MenuItem.create(name: 'Hot Chocolate', menu_section_id: menu_section_5.id)
-  MenuItem.create(name: 'Cheese', menu_section_id: menu_section_6.id)
-  MenuItem.create(name: 'Sausage', menu_section_id: menu_section_6.id)
-  MenuItem.create(name: 'Pepperoni', menu_section_id: menu_section_6.id)
-  MenuItem.create(name: 'Sweet Corn', menu_section_id: menu_section_6.id)
-  MenuItem.create(name: 'Cider', menu_section_id: menu_section_7.id)
-  MenuItem.create(name: 'Beer', menu_section_id: menu_section_7.id)
-  MenuItem.create(name: 'Wine', menu_section_id: menu_section_7.id)
+  MenuItem.create(name: 'Landmark Crepe', menu_section_id: menu_section_1.id, price: 1199)
+  MenuItem.create(name: 'BBQ Chicken Crepe', menu_section_id: menu_section_1.id, price: 1299)
+  MenuItem.create(name: 'Coffee', menu_section_id: menu_section_2.id, price: 299)
+  MenuItem.create(name: 'Tea', menu_section_id: menu_section_2.id, price: 199)
+  MenuItem.create(name: 'Hot Chocolate', menu_section_id: menu_section_2.id, price: 299)
+  MenuItem.create(name: 'The Healthy', menu_section_id: menu_section_3.id, price: 1099)
+  MenuItem.create(name: 'PB&J', menu_section_id: menu_section_3.id, price: 1099)
+  MenuItem.create(name: 'Ice Cream Sundae', menu_section_id: menu_section_4.id, price: 599)
+  MenuItem.create(name: 'Cheesecake', menu_section_id: menu_section_4.id, price: 699)
+  MenuItem.create(name: 'Coffee', menu_section_id: menu_section_5.id, price: 250)
+  MenuItem.create(name: 'Tea', menu_section_id: menu_section_5.id, price: 199)
+  MenuItem.create(name: 'Hot Chocolate', menu_section_id: menu_section_5.id, price: 250)
+  MenuItem.create(name: 'Cheese', menu_section_id: menu_section_6.id, price: 1499)
+  MenuItem.create(name: 'Sausage', menu_section_id: menu_section_6.id, price: 1599)
+  MenuItem.create(name: 'Pepperoni', menu_section_id: menu_section_6.id, price: 1599)
+  MenuItem.create(name: 'Sweet Corn', menu_section_id: menu_section_6.id, price: 1699)
+  MenuItem.create(name: 'Cider', menu_section_id: menu_section_7.id, price: 599)
+  MenuItem.create(name: 'Beer', menu_section_id: menu_section_7.id, price: 499)
+  MenuItem.create(name: 'Wine', menu_section_id: menu_section_7.id, price: 599)
 end

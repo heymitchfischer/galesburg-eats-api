@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe 'CartedItems', type: :request do
-  CARTED_ITEMS_KEYS = %w[id menu_item_id menu_item_name business_id business_name]
-
   describe '#index' do
     context 'when a user is signed in' do
       let(:item)     { @business_1.menu_items.first }
