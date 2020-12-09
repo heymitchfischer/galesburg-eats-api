@@ -100,7 +100,7 @@ RSpec.describe 'Orders', type: :request do
           parsed_body = JSON.parse(response.body)
           expect(parsed_body).to be_an_instance_of(Hash)
           expect(parsed_body.keys).to include('error')
-          expect(parsed_body['error']).to eq('There are no items in the cart.')
+          expect(parsed_body['error']).to eq('no_items_in_cart_to_checkout')
         end
       end
 
@@ -145,7 +145,7 @@ RSpec.describe 'Orders', type: :request do
           parsed_body = JSON.parse(response.body)
           expect(parsed_body).to be_an_instance_of(Hash)
           expect(parsed_body.keys).to include('error')
-          expect(parsed_body['error']).to eq('Cart has items from different businesses.')
+          expect(parsed_body['error']).to eq('business_ids_in_cart_do_not_match')
           expect(user.current_items.length).to eq(2)
         end
       end

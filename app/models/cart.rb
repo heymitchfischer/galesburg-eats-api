@@ -3,10 +3,10 @@ class CartError < StandardError; end
 class Cart
   attr_accessor :user
 
-  BUSINESS_IDS_IN_CART_DO_NOT_MATCH_ERROR = 'Cart has items from different businesses.'
-  NEW_ITEM_BUSINESS_ID_DOES_NOT_MATCH_ERROR = 'New item belongs to a different business than other items in cart.'
-  ITEM_IS_NOT_IN_CART = 'That item is not in the current user\'s cart.'
-  NO_ITEMS_IN_CART_TO_CHECKOUT = 'There are no items in the cart.'
+  BUSINESS_IDS_IN_CART_DO_NOT_MATCH = :business_ids_in_cart_do_not_match
+  NEW_ITEM_BUSINESS_ID_DOES_NOT_MATCH = :new_item_business_id_does_not_match
+  ITEM_IS_NOT_IN_CART = :item_is_not_in_cart
+  NO_ITEMS_IN_CART_TO_CHECKOUT = :no_items_in_cart_to_checkout
 
   def initialize(user)
     @user = user
@@ -23,7 +23,7 @@ class Cart
     business_id = items.map { |item| item.business.id }.uniq
 
     if business_id.length > 1
-      raise CartError.new(BUSINESS_IDS_IN_CART_DO_NOT_MATCH_ERROR)
+      raise CartError.new(BUSINESS_IDS_IN_CART_DO_NOT_MATCH)
     end
 
     business_id.first
@@ -31,7 +31,7 @@ class Cart
 
   def add_item(item)
     if current_items.any? && item.business.id != current_business_id
-      raise CartError.new(NEW_ITEM_BUSINESS_ID_DOES_NOT_MATCH_ERROR)
+      raise CartError.new(NEW_ITEM_BUSINESS_ID_DOES_NOT_MATCH)
     end
 
     CartedItem.create(user_id: user.id,

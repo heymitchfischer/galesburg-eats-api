@@ -162,6 +162,7 @@ RSpec.describe 'CartedItems', type: :request do
           parsed_body = JSON.parse(response.body)
           expect(parsed_body).to be_an_instance_of(Hash)
           expect(parsed_body.keys).to include('error')
+          expect(parsed_body['error']).to eq('new_item_business_id_does_not_match')
           expect(user.current_items.length).to eq(1)
         end
       end
@@ -250,7 +251,7 @@ RSpec.describe 'CartedItems', type: :request do
           parsed_body = JSON.parse(response.body)
           expect(parsed_body).to be_an_instance_of(Hash)
           expect(parsed_body.keys).to include('error')
-          expect(parsed_body['error']).to eq('That item is not in the current user\'s cart.')
+          expect(parsed_body['error']).to eq('item_is_not_in_cart')
           expect(user_2.current_items.length).to eq(1)
         end
       end
