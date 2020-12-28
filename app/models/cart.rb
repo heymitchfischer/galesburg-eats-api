@@ -13,7 +13,11 @@ class Cart
   end
 
   def current_items
-    CartedItem.where(user_id: user.id, order_id: nil, removed: false)
+    if user.registered?
+      CartedItem.where(user_id: user.id, order_id: nil, removed: false)
+    else
+      CartedItem.where(guest_user_id: user.id, order_id: nil, removed: false)
+    end
   end
 
   def current_business_id
@@ -34,8 +38,13 @@ class Cart
       raise CartError.new(NEW_ITEM_BUSINESS_ID_DOES_NOT_MATCH)
     end
 
-    CartedItem.create(user_id: user.id,
-                      menu_item_id: item.id)
+    if user.registered?
+      CartedItem.create!(user_id: user.id,
+                         menu_item_id: item.id)
+    else
+      CartedItem.create!(guest_user_id: user.id,
+                         menu_item_id: item.id)
+    end
   end
 
   def remove_item(item)
@@ -51,7 +60,13 @@ class Cart
     total_price = determine_total(current_items)
 
     Order.transaction do
-      order = Order.create(user_id: user.id, business_id: current_business_id, total_price: total_price)
+      order =
+        if user.registered?
+          Order.create!(user_id: user.id, business_id: current_business_id, total_price: total_price)
+        else
+          Order.create!(guest_user_id: user.id, business_id: current_business_id, total_price: total_price)
+        end
+
       items_to_checkout.update_all(order_id: order.id)
 
       # Make sure that we're returning the created order as the last line

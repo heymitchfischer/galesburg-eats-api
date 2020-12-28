@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_03_060456) do
+ActiveRecord::Schema.define(version: 2020_12_28_032156) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,8 @@ ActiveRecord::Schema.define(version: 2020_12_03_060456) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "removed", default: false
+    t.string "guest_user_id"
+    t.index ["guest_user_id"], name: "index_carted_items_on_guest_user_id"
   end
 
   create_table "menu_items", force: :cascade do |t|
@@ -82,6 +84,8 @@ ActiveRecord::Schema.define(version: 2020_12_03_060456) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "business_id"
     t.integer "total_price"
+    t.string "guest_user_id"
+    t.index ["guest_user_id"], name: "index_orders_on_guest_user_id"
   end
 
   create_table "user_allowlisted_jwts", force: :cascade do |t|

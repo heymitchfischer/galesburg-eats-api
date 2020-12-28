@@ -70,12 +70,17 @@ RSpec.describe 'Orders', type: :request do
   end
 
   describe '#create' do
+    let(:item_1) { @business_1.menu_items.first }
+    let(:item_2) { @business_2.menu_items.first }
+
+    before do
+      create_businesses
+    end
+
     context 'when a user is signed in' do
       let(:email)    { 'test@example.com' }
       let(:password) { 'password' }
       let(:user)     { User.find_by(email: email) }
-      let(:item_1)   { @business_1.menu_items.first }
-      let(:item_2)   { @business_2.menu_items.first }
 
       let(:headers) do
         {
@@ -88,7 +93,6 @@ RSpec.describe 'Orders', type: :request do
 
       before do
         create_and_log_in_user(email, password)
-        create_businesses
       end
 
       context 'when the user has an empty cart' do
@@ -137,7 +141,7 @@ RSpec.describe 'Orders', type: :request do
           CartedItem.create(user_id: user.id, menu_item_id: item_2.id)
         end
 
-        it 'does not create a new order and returns an error message' do
+        it 'creates a new guest order and updates the items in the cart' do
           post(orders_path, :headers => headers)
           expect(response.status).to eq(500)
           expect(response.content_type).to include('application/json')
@@ -159,24 +163,43 @@ RSpec.describe 'Orders', type: :request do
         }
       end
 
-      it 'does not add create a new order and returns an error message' do
+      before do
+        post(carted_items_path, :params => { 'menu_item_id' => item_1.id }.to_json, :headers => headers)
+        post(carted_items_path, :params => { 'menu_item_id' => item_1.id }.to_json, :headers => headers)
+      end
+
+      it 'creates a new order and updates the items in the cart' do
         post(orders_path, :headers => headers)
-        expect(response.status).to eq(401)
+        expect(response.status).to eq(201)
         expect(response.content_type).to include('application/json')
 
         parsed_body = JSON.parse(response.body)
         expect(parsed_body).to be_an_instance_of(Hash)
-        expect(parsed_body.keys).to include('error')
+        expect(parsed_body.keys).to eq(ORDER_KEYS)
+        expect(parsed_body['total_price']).to eq(2398)
+        expect(parsed_body['carted_items']).to be_an_instance_of(Array)
+        expect(parsed_body['carted_items'].length).to eq(2)
+
+        ordered_item = parsed_body['carted_items'].first
+        expect(ordered_item).to be_an_instance_of(Hash)
+        expect(ordered_item.keys).to eq(CARTED_ITEMS_KEYS)
+        expect(ordered_item['menu_item_id']).to eq(item_1.id)
+        expect(CartedItem.last.guest_user.current_items.length).to eq(0)
       end
     end
   end
 
   describe '#show' do
+    let(:item) { @business_1.menu_items.first }
+
+    before do
+      create_businesses
+    end
+
     context 'when a user is signed in' do
       let(:email)    { 'test@example.com' }
       let(:password) { 'password' }
       let(:user)     { User.find_by(email: email) }
-      let(:item)     { @business_1.menu_items.first }
 
       let(:headers) do
         {
@@ -189,7 +212,6 @@ RSpec.describe 'Orders', type: :request do
 
       before do
         create_and_log_in_user(email, password)
-        create_businesses
       end
 
       context 'when the user has an order' do
@@ -227,7 +249,7 @@ RSpec.describe 'Orders', type: :request do
           user_2.cart.checkout
         end
 
-        it 'returns the order details' do
+        it 'does not return the order details and instead returns an error' do
           get(order_path(Order.last), :headers => headers)
           expect(response.status).to eq(403)
           expect(response.content_type).to include('application/json')
@@ -248,14 +270,44 @@ RSpec.describe 'Orders', type: :request do
         }
       end
 
-      it 'does not add create a new order and returns an error message' do
-        get(order_path(1), :headers => headers)
-        expect(response.status).to eq(401)
-        expect(response.content_type).to include('application/json')
+      before do
+        post(carted_items_path, :params => { 'menu_item_id' => item.id }.to_json, :headers => headers)
+        post(carted_items_path, :params => { 'menu_item_id' => item.id }.to_json, :headers => headers)
+        post(orders_path, :headers => headers)
+      end
 
-        parsed_body = JSON.parse(response.body)
-        expect(parsed_body).to be_an_instance_of(Hash)
-        expect(parsed_body.keys).to include('error')
+      context 'when the correct guest cookie is set' do
+        it 'returns the order details' do
+          get(order_path(Order.last), :headers => headers)
+          expect(response.status).to eq(200)
+          expect(response.content_type).to include('application/json')
+
+          parsed_body = JSON.parse(response.body)
+          expect(parsed_body).to be_an_instance_of(Hash)
+          expect(parsed_body.keys).to eq(ORDER_KEYS)
+          expect(parsed_body['total_price']).to eq(2398)
+          expect(parsed_body['carted_items']).to be_an_instance_of(Array)
+          expect(parsed_body['carted_items'].length).to eq(2)
+
+          ordered_item = parsed_body['carted_items'].first
+          expect(ordered_item).to be_an_instance_of(Hash)
+          expect(ordered_item.keys).to eq(CARTED_ITEMS_KEYS)
+          expect(ordered_item['menu_item_id']).to eq(item.id)
+        end
+      end
+
+      context 'when the correct guest cookie is not set' do
+        it 'does not return the order details and instead returns an error' do
+          cookies.delete('guest_user_id')
+          get(order_path(Order.last), :headers => headers)
+          expect(response.status).to eq(403)
+          expect(response.content_type).to include('application/json')
+
+          parsed_body = JSON.parse(response.body)
+          expect(parsed_body).to be_an_instance_of(Hash)
+          expect(parsed_body.keys).to include('error')
+          expect(parsed_body['error']).to eq('User does not have access to that order.')
+        end
       end
     end
   end

@@ -1,5 +1,5 @@
 class OrdersController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, only: [:index]
   before_action :determine_access_to_order!, only: [:show]
 
   def index
@@ -20,7 +20,7 @@ class OrdersController < ApplicationController
   private
 
   def cart
-    @cart ||= Cart.new(current_user)
+    @cart ||= Cart.new(current_or_guest_user)
   end
 
   def order
@@ -28,7 +28,7 @@ class OrdersController < ApplicationController
   end
 
   def determine_access_to_order!
-    unless order.user == current_user
+    unless order.placed_by.id == current_or_guest_user.id
       render json: { error: 'User does not have access to that order.' }, status: 403
       return
     end

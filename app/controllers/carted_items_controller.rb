@@ -1,6 +1,4 @@
 class CartedItemsController < ApplicationController
-  before_action :authenticate_user!
-
   def index
     @carted_items = cart.current_items
   end
@@ -38,6 +36,6 @@ class CartedItemsController < ApplicationController
   end
 
   def cart
-    @cart ||= Cart.new(current_user)
+    @cart ||= Cart.new(current_or_guest_user)
   end
 end

@@ -22,5 +22,13 @@ class User < ApplicationRecord
   def cart
     @cart ||= Cart.new(self)
   end
+
+  def guest?
+    false
+  end
+
+  def registered?
+    true
+  end
 end
 
