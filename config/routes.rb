@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
-  devise_for :users, path: 'users', defaults: { format: :json }
+  devise_for :users,
+    controllers: {
+      sessions: 'users/sessions',
+      registrations: 'users/registrations'
+    },
+    path: 'users',
+    defaults: { format: :json }
+
   get    '/users/auto_sign_in' => 'users#auto_sign_in', as: :user_auto_sign_in
   get    '/businesses' => 'businesses#index', as: :businesses
   get    '/businesses/:slug' => 'businesses#show', as: :business

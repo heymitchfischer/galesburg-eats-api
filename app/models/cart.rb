@@ -77,4 +77,8 @@ class Cart
   def determine_total(items = current_items)
     items.reduce(0) { |total, item| total + item.menu_item.price }
   end
+
+  def transfer_ownership_of_current_items_to(new_user)
+    current_items.update_all(user_id: new_user.id, guest_user_id: nil)
+  end
 end

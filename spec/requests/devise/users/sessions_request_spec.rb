@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Devise::Sessions', type: :request do
+RSpec.describe 'Users::SessionsController', type: :request do
   describe '#create' do
     let(:email)    { 'test@example.com' }
     let(:password) { 'password' }
@@ -37,6 +37,28 @@ RSpec.describe 'Devise::Sessions', type: :request do
         expect(parsed_body.keys).to include('id', 'email')
         expect(parsed_body['email']).to eq(email)
         expect(user.reload.logged_in?).to be_truthy
+      end
+
+      context 'when the user has items from a guest session in their cart' do
+        let(:item) { @business_1.menu_items.first }
+
+        before do
+          create_businesses
+          post(carted_items_path, :params => { 'menu_item_id' => item.id }.to_json, :headers => headers)
+        end
+
+        it 'logs the user in and moves the guest items to the user cart' do
+          post(user_session_path, :params => params, :headers => headers)
+          parsed_body = JSON.parse(response.body)
+          expect(response.status).to eq(201)
+          expect(response.content_type).to include('application/json')
+          expect(response.headers).to include('Authorization')
+          expect(parsed_body.keys).to include('id', 'email')
+          expect(parsed_body['email']).to eq(email)
+          expect(user.reload.logged_in?).to be_truthy
+          expect(CartedItem.last.guest_user_id).to eq(nil)
+          expect(CartedItem.last.user_id).to eq(user.id)
+        end
       end
     end
 
