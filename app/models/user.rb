@@ -11,6 +11,10 @@ class User < ApplicationRecord
   has_many :carted_items
   has_many :orders
 
+  validates :first_name, presence: true
+  validates :last_name, presence: true
+  validates :phone_number, presence: true
+
   def current_items
     cart.current_items
   end

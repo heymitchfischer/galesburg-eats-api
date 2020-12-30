@@ -64,6 +64,7 @@ RSpec.configure do |config|
 end
 
 # Define constants here that will be used to check API responses
+USER_KEYS = %w[id email created_at updated_at first_name last_name phone_number]
 BUSINESSES_KEYS = %w[id name address description slug image_url].freeze
 BUSINESS_KEYS = %w[id name address description slug image_url menus].freeze
 MENU_KEYS = %w[id name menu_sections].freeze
@@ -73,11 +74,12 @@ CARTED_ITEMS_KEYS = %w[id menu_item_id menu_item_name business_id business_name 
 ORDER_KEYS = %w[id created_at business_name business_slug business_image_url total_price carted_items].freeze
 
 def create_user(email, password)
-  User.create(
-    email:                 email,
-    password:              password,
-    password_confirmation: password
-  )
+  User.create(email: email,
+              password: password,
+              password_confirmation: password,
+              first_name: 'Test',
+              last_name: 'User',
+              phone_number: '13095555555')
 end
 
 def log_user_in(email, password)

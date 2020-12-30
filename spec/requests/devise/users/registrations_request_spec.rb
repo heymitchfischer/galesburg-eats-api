@@ -5,6 +5,9 @@ RSpec.describe 'Users::RegistrationsController', type: :request do
     let(:email)                 { 'test@example.com' }
     let(:password)              { 'password' }
     let(:password_confirmation) { 'password' }
+    let(:first_name)            { 'Test' }
+    let(:last_name)             { 'User' }
+    let(:phone_number)          { '13095555555' }
 
     let(:headers) do
       {
@@ -19,7 +22,10 @@ RSpec.describe 'Users::RegistrationsController', type: :request do
         'user' => {
           'email'                 => email,
           'password'              => password,
-          'password_confirmation' => password_confirmation
+          'password_confirmation' => password_confirmation,
+          'first_name'            => first_name,
+          'last_name'             => last_name,
+          'phone_number'          => phone_number
         }
       }.to_json
     end
@@ -31,7 +37,7 @@ RSpec.describe 'Users::RegistrationsController', type: :request do
         expect(response.status).to eq(201)
         expect(response.content_type).to include('application/json')
         expect(response.headers).to include('Authorization')
-        expect(parsed_body.keys).to include('id', 'email')
+        expect(parsed_body.keys).to eq(USER_KEYS)
         expect(parsed_body['email']).to eq(email)
         expect(User.find(parsed_body['id']).logged_in?).to be_truthy
       end
@@ -50,7 +56,7 @@ RSpec.describe 'Users::RegistrationsController', type: :request do
           expect(response.status).to eq(201)
           expect(response.content_type).to include('application/json')
           expect(response.headers).to include('Authorization')
-          expect(parsed_body.keys).to include('id', 'email')
+          expect(parsed_body.keys).to eq(USER_KEYS)
           expect(parsed_body['email']).to eq(email)
           expect(User.find(parsed_body['id']).logged_in?).to be_truthy
           expect(CartedItem.last.guest_user_id).to eq(nil)
@@ -82,6 +88,45 @@ RSpec.describe 'Users::RegistrationsController', type: :request do
         expect(response.content_type).to include('application/json')
         expect(parsed_body.keys).to include('errors')
         expect(parsed_body['errors'].keys).to include('email')
+      end
+    end
+
+    context 'with a missing first_name' do
+      let(:first_name) { nil }
+
+      it 'fails to create a user' do
+        post(user_registration_path, :params => params, :headers => headers)
+        parsed_body = JSON.parse(response.body)
+        expect(response.status).to eq(422)
+        expect(response.content_type).to include('application/json')
+        expect(parsed_body.keys).to include('errors')
+        expect(parsed_body['errors'].keys).to include('first_name')
+      end
+    end
+
+    context 'with a missing last_name' do
+      let(:last_name) { nil }
+
+      it 'fails to create a user' do
+        post(user_registration_path, :params => params, :headers => headers)
+        parsed_body = JSON.parse(response.body)
+        expect(response.status).to eq(422)
+        expect(response.content_type).to include('application/json')
+        expect(parsed_body.keys).to include('errors')
+        expect(parsed_body['errors'].keys).to include('last_name')
+      end
+    end
+
+    context 'with a missing phone_number' do
+      let(:phone_number) { nil }
+
+      it 'fails to create a user' do
+        post(user_registration_path, :params => params, :headers => headers)
+        parsed_body = JSON.parse(response.body)
+        expect(response.status).to eq(422)
+        expect(response.content_type).to include('application/json')
+        expect(parsed_body.keys).to include('errors')
+        expect(parsed_body['errors'].keys).to include('phone_number')
       end
     end
 

@@ -19,7 +19,7 @@ RSpec.describe 'Users', type: :request do
         parsed_body = JSON.parse(response.body)
         expect(response.status).to eq(201)
         expect(response.content_type).to include('application/json')
-        expect(parsed_body.keys).to include('id', 'email')
+        expect(parsed_body.keys).to eq(USER_KEYS)
       end
     end
 
@@ -38,7 +38,6 @@ RSpec.describe 'Users', type: :request do
         parsed_body = JSON.parse(response.body)
         expect(response.status).to eq(401)
         expect(response.content_type).to include('application/json')
-        expect(parsed_body.keys).not_to include('id', 'email')
         expect(parsed_body.keys).to include('error')
       end
     end

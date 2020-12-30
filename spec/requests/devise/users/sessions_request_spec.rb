@@ -34,7 +34,7 @@ RSpec.describe 'Users::SessionsController', type: :request do
         expect(response.status).to eq(201)
         expect(response.content_type).to include('application/json')
         expect(response.headers).to include('Authorization')
-        expect(parsed_body.keys).to include('id', 'email')
+        expect(parsed_body.keys).to eq(USER_KEYS)
         expect(parsed_body['email']).to eq(email)
         expect(user.reload.logged_in?).to be_truthy
       end
@@ -53,7 +53,7 @@ RSpec.describe 'Users::SessionsController', type: :request do
           expect(response.status).to eq(201)
           expect(response.content_type).to include('application/json')
           expect(response.headers).to include('Authorization')
-          expect(parsed_body.keys).to include('id', 'email')
+          expect(parsed_body.keys).to eq(USER_KEYS)
           expect(parsed_body['email']).to eq(email)
           expect(user.reload.logged_in?).to be_truthy
           expect(CartedItem.last.guest_user_id).to eq(nil)
@@ -78,7 +78,6 @@ RSpec.describe 'Users::SessionsController', type: :request do
         expect(response.status).to eq(401)
         expect(response.content_type).to include('application/json')
         expect(response.headers).not_to include('Authorization')
-        expect(parsed_body.keys).not_to include('id', 'email')
         expect(parsed_body.keys).to include('error')
         expect(user.reload.logged_in?).to be_falsey
       end
@@ -100,7 +99,6 @@ RSpec.describe 'Users::SessionsController', type: :request do
         expect(response.status).to eq(401)
         expect(response.content_type).to include('application/json')
         expect(response.headers).not_to include('Authorization')
-        expect(parsed_body.keys).not_to include('id', 'email')
         expect(parsed_body.keys).to include('error')
         expect(user.reload.logged_in?).to be_falsey
       end
