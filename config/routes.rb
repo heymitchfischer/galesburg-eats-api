@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     defaults: { format: :json }
 
   get    '/users/auto_sign_in' => 'users#auto_sign_in', as: :user_auto_sign_in
+  get    '/business_users/auto_sign_in' => 'business_users#auto_sign_in', as: :business_user_auto_sign_in
   get    '/businesses' => 'businesses#index', as: :businesses
   get    '/businesses/:slug' => 'businesses#show', as: :business
   get    '/carted_items' => 'carted_items#index', as: :carted_items
