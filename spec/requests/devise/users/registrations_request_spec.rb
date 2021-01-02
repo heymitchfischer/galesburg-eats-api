@@ -65,6 +65,19 @@ RSpec.describe 'Users::RegistrationsController', type: :request do
       end
     end
 
+    context 'with an invalid password' do
+      let(:password) { '1234' }
+
+      it 'fails to create a user' do
+        post(user_registration_path, :params => params, :headers => headers)
+        parsed_body = JSON.parse(response.body)
+        expect(response.status).to eq(422)
+        expect(response.content_type).to include('application/json')
+        expect(parsed_body.keys).to include('errors')
+        expect(parsed_body['errors'].keys).to include('password_confirmation', 'password')
+      end
+    end
+
     context 'with an invalid password confirmation' do
       let(:password_confirmation) { 'not_a_match' }
 

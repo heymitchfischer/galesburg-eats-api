@@ -1,4 +1,12 @@
 Rails.application.routes.draw do
+  devise_for :business_users,
+    controllers: {
+      sessions: 'business_users/sessions',
+      registrations: 'business_users/registrations'
+    },
+    path: 'business_users',
+    defaults: { format: :json }
+
   devise_for :users,
     controllers: {
       sessions: 'users/sessions',

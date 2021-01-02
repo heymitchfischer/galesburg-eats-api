@@ -65,6 +65,7 @@ end
 
 # Define constants here that will be used to check API responses
 USER_KEYS = %w[id email created_at updated_at first_name last_name phone_number]
+BUSINESS_USER_KEYS = %w[id email created_at updated_at]
 BUSINESSES_KEYS = %w[id name address description slug image_url].freeze
 BUSINESS_KEYS = %w[id name address description slug image_url menus].freeze
 MENU_KEYS = %w[id name menu_sections].freeze
@@ -104,6 +105,36 @@ end
 def create_and_log_in_user(email, password)
   create_user(email, password)
   log_user_in(email, password)
+end
+
+def create_business_user(email, password)
+  BusinessUser.create(email: email,
+                      password: password,
+                      password_confirmation: password)
+end
+
+def log_business_user_in(email, password)
+  headers = {
+    'Accept'       => 'application/json',
+    'Content-Type' => 'application/json',
+    'Jwt-Auth'     => 'business_web_client'
+  }
+
+  params = {
+    'business_user' => {
+      'email'    => email,
+      'password' => password
+    }
+  }.to_json
+
+  post(business_user_session_path, :params => params, :headers => headers)
+
+  @jwt = response.headers['Authorization']
+end
+
+def create_and_log_in_business_user(email, password)
+  create_business_user(email, password)
+  log_business_user_in(email, password)
 end
 
 def create_businesses
