@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
+
+  galesburg_eats_api:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - .:/galesburg_eats_api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      - DEVISE_JWT_SECRET_KEY
+      - HOST_URL
+
+  galesburg_eats_client:
+    build:
+      context: https://github.com/heymitchfischer/galesburg-eats-client.git
+      dockerfile: Dockerfile
+    volumes:
+      - '/app'
+      - '/app/node_modules'
+    ports:
+      - "8080:8080"
