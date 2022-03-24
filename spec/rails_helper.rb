@@ -66,13 +66,13 @@ end
 # Define constants here that will be used to check API responses
 USER_KEYS = %w[id email created_at updated_at first_name last_name phone_number]
 BUSINESS_USER_KEYS = %w[id email created_at updated_at]
-BUSINESSES_KEYS = %w[id name address description slug image_url].freeze
-BUSINESS_KEYS = %w[id name address description slug image_url menus].freeze
+BUSINESSES_KEYS = %w[id name address description slug thumbnail_image_url].freeze
+BUSINESS_KEYS = %w[id name address description slug thumbnail_image_url menus].freeze
 MENU_KEYS = %w[id name menu_sections].freeze
 MENU_SECTION_KEYS = %w[id name menu_items].freeze
 MENU_ITEM_KEYS = %w[id name price].freeze
 CARTED_ITEMS_KEYS = %w[id menu_item_id menu_item_name business_id business_name price].freeze
-ORDER_KEYS = %w[id created_at business_name business_slug business_image_url total_price carted_items].freeze
+ORDER_KEYS = %w[id created_at business_name business_slug business_thumbnail_image_url total_price carted_items].freeze
 
 def create_user(email, password)
   User.create(email: email,
@@ -146,13 +146,13 @@ def create_businesses
                                 address: '57 S Seminary St, Galesburg, IL',
                                 description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
 
-  @business_1.image.attach(io: File.open('public/test_images/landmark.jpg'),
-                                filename: 'landmark.jpg',
-                                content_type: 'image/jpg')
+  @business_1.thumbnail_image.attach(io: File.open('public/test_images/landmark.jpg'),
+                                     filename: 'landmark.jpg',
+                                     content_type: 'image/jpg')
 
-  @business_2.image.attach(io: File.open('public/test_images/baked.jpg'),
-                                filename: 'baked.jpg',
-                                content_type: 'image/jpg')
+  @business_2.thumbnail_image.attach(io: File.open('public/test_images/baked.jpg'),
+                                     filename: 'baked.jpg',
+                                     content_type: 'image/jpg')
 
   menu_1 = Menu.create(name: 'Breakfast', business_id: @business_1.id)
   menu_2 = Menu.create(name: 'Lunch', business_id: @business_1.id)

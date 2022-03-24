@@ -3,7 +3,7 @@ json.array! @orders do |order|
   json.created_at order.created_at
   json.business_name order.business.name
   json.business_slug order.business.slug
-  json.business_image_url order.business.image_url
+  json.business_thumbnail_image_url order.business.thumbnail_image_url
   json.total_price order.total_price
 
   json.carted_items order.carted_items do |carted_item|
