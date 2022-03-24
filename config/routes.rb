@@ -19,6 +19,8 @@ Rails.application.routes.draw do
   get    '/business_users/auto_sign_in' => 'business_users#auto_sign_in', as: :business_user_auto_sign_in
   get    '/businesses' => 'businesses#index', as: :businesses
   get    '/businesses/:slug' => 'businesses#show', as: :business
+  post   '/businesses' => 'businesses#create'
+  put    '/businesses/:slug/update_image' => 'businesses#update_image'
   get    '/carted_items' => 'carted_items#index', as: :carted_items
   post   '/carted_items' => 'carted_items#create'
   delete '/carted_items/:id' => 'carted_items#destroy', as: :destroy_carted_item
