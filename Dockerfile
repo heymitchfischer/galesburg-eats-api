@@ -3,9 +3,9 @@ FROM ruby:3.0.3
 RUN apt-get update -qq && apt-get install -y \
     postgresql-client
 
-WORKDIR /galesburg_eats_api
-COPY Gemfile /galesburg_eats_api/Gemfile
-COPY Gemfile.lock /galesburg_eats_api/Gemfile.lock
+WORKDIR /app
+COPY Gemfile /app/Gemfile
+COPY Gemfile.lock /app/Gemfile.lock
 RUN gem install bundler
 RUN bundle install
 

@@ -1,24 +1,36 @@
-# README
+# Galesburg Eats
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Galesburg Eats was started as a project during the early pandemic in an attempt to provide a local solution for ordering/picking up food from restaurants in Galesburg, IL. There were two objectives for the MVP: 1) Provide an easily-accessible/moderately customizeable menu page for restaurants (most restaurants in the area either have no web presence or rely on Facebook for this) and 2) Allow customers to "reserve" an order that the restaurant can then either accept/reject. The MVP was to include no payment processing in order to minimize the complexity of integrating the service; this would also help local restaurants keep 100% of the revenue.
 
-Things you may want to cover:
+The project was subsequently abandoned, but makes for a good sample application!
 
-* Ruby version
+## Getting Started
 
-* System dependencies
+### With Docker (Recommended)
+First, follow [these instructions](https://docs.docker.com/get-docker/) to install Docker Desktop if don't have it installed.
 
-* Configuration
+If you're not doing any dev work on the frontend client, you can simply uncomment it in `docker-compose.yml` and it should start up in a docker container when you run the commands below. If you are planning to make changes to the frontend client, you'll want to keep that service commented out in `docker-compose.yml`, clone the [frontend client](https://github.com/heymitchfischer/galesburg-eats-client), and follow its initialization instructions as well.
+```
+docker-compose build
+docker-compose run galesburg_eats_api rails db:setup
+docker-compose up
+```
 
-* Database creation
+To run tests (replace `run` with `exec` if you have the containers running already):
+```
+docker-compose run galesburg_eats_api rspec spec
+```
 
-* Database initialization
+To enter the rails console (replace `run` with `exec` if you have the containers running already):
+```
+docker-compose run galesburg_eats_api rails c
+```
 
-* How to run the test suite
+### Bare Metal
+```
+bundle install
+rails db:setup
+rails s
+```
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Make sure to clone the [frontend client](https://github.com/heymitchfischer/galesburg-eats-client) and follow its initialization instructions as well.

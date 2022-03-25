@@ -327,7 +327,7 @@ Devise.setup do |config|
       ['DELETE', %r{^/users/sign_out$}],
       ['DELETE', %r{^/business_users/sign_out$}]
     ]
-    jwt.expiration_time = 10.years.to_i
+    jwt.expiration_time = 1.years.to_i
     jwt.aud_header = 'Jwt-Auth'
   end
 

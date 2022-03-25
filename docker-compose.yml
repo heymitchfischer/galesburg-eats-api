@@ -11,21 +11,19 @@ services:
     build: .
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
-      - .:/galesburg_eats_api
+      - '.:/app'
     ports:
       - "3000:3000"
     depends_on:
       - db
-    environment:
-      - DEVISE_JWT_SECRET_KEY
-      - HOST_URL
+    env_file:
+      - .env
 
-  galesburg_eats_client:
-    build:
-      context: https://github.com/heymitchfischer/galesburg-eats-client.git
-      dockerfile: Dockerfile
-    volumes:
-      - '/app'
-      - '/app/node_modules'
-    ports:
-      - "8080:8080"
+  # galesburg_eats_client:
+  #   build:
+  #     context: https://github.com/heymitchfischer/galesburg-eats-client.git
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - VUE_APP_API_URL=http://localhost:3000
+  #   ports:
+  #     - "8080:8080"
