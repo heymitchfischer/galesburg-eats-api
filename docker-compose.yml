@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  db:
+  postgres:
     image: postgres
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
@@ -15,9 +15,11 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - db
+      - postgres
     env_file:
       - .env
+    environment:
+      - POSTGRES_HOST=postgres
 
   # galesburg_eats_client:
   #   build:
